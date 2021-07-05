@@ -63,7 +63,7 @@ class _OnboardingScreen extends State<OnboardingScreen> {
                         onError: (error) {
                           _logger.severe('Onboarding throws $error error');
                         },
-                        nextScreen: MainMenu(),
+                        nextScreen: MainMenu(text: atSign,),
                       );
                     },
                     child: Text(AppStrings.scan_qr)),

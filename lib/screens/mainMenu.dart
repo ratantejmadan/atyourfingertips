@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:atyourfingertips/screens/onboarding.dart';
 
 AllToDoLists allToDoLists = AllToDoLists();
 AllMembers allMembers = AllMembers([]);
 
+
 class MainMenu extends StatefulWidget {
+  final String text;
+  MainMenu({Key key, @required this.text}) : super(key: key);
   static final String id = 'second';
   @override
   _MainMenuState createState() => _MainMenuState();
@@ -25,7 +29,7 @@ class _MainMenuState extends State<MainMenu> {
 }
 
 class MainPage extends StatefulWidget {
-  MainPage({Key key, this.title}) : super(key: key);
+  MainPage({Key key, this.title,}) : super(key: key);
   final String title;
 
   @override
@@ -38,7 +42,7 @@ class _MainPage extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Welcome to @Your Fingertips'),
+          title: Text('Welcome'),
           leading: Icon(Icons.account_circle_rounded),
           actions: [
             Icon(Icons.more_vert),
