@@ -1,598 +1,171 @@
+import 'package:atyourfingertips/service/client_sdk_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:atyourfingertips/screens/onboarding.dart';
+import 'package:at_commons/at_commons.dart';
+import 'package:atyourfingertips/utils/constants.dart' as constant;
+import 'package:atyourfingertips/components/list_widget.dart';
+import 'package:atyourfingertips/screens/create_lists.dart';
+import 'package:atyourfingertips/screens/yourlists.dart';
 
-AllToDoLists allToDoLists = AllToDoLists();
-AllMembers allMembers = AllMembers([]);
+class HomeScreen extends StatefulWidget {
+  static final String id = 'home';
+  // final bool shouldReload;
 
-
-class MainMenu extends StatefulWidget {
-  final String text;
-  MainMenu({Key key, @required this.text}) : super(key: key);
-  static final String id = 'second';
-  @override
-  _MainMenuState createState() => _MainMenuState();
-}
-
-class _MainMenuState extends State<MainMenu> {
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: '@Your Fingertips',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: MainPage(title: 'Home'),
-    );
-  }
-}
-
-class MainPage extends StatefulWidget {
-  MainPage({Key key, this.title,}) : super(key: key);
-  final String title;
+  // const HomeScreen({
+  //   this.shouldReload,
+  // });
 
   @override
-  _MainPage createState() => _MainPage();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _MainPage extends State<MainPage> {
-  AllMembers allMembers = AllMembers([]);
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text('Welcome'),
-          leading: Icon(Icons.account_circle_rounded),
-          actions: [
-            Icon(Icons.more_vert),
-          ],
-        ),
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
+  final List<ListWidget> sortedWidgets = [];
+  ClientSdkService clientSdkService = ClientSdkService.getInstance();
+  String atSign = ClientSdkService.getInstance().getAtSign().toString();
 
-        body: Center(
-          child: Container(
-            margin: const EdgeInsets.only(top: 200),
-            child: Column(
-              children: [
-                new ButtonBar(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ElevatedButton(
-                      child: Text('YourLists'),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => YourLists()));
-                      },
-                    ),
-                    ElevatedButton(
-                      child: Text('Group Lists'),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => TeamLists()));
-                      },
-                    ),
-                    ElevatedButton(
-                      child: Text('Settings'),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => TeamLists()));
-                      },
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        )
-    );
-  }
-}
-
-
-
-
-class YourLists extends StatefulWidget {
-  @override
-  YourListsState createState() => YourListsState();
-}
-
-class YourListsState extends State<YourLists> {
-
-
-
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(top: true, bottom: true, child: Scaffold(
-        appBar: AppBar(
-          actions: [IconButton(onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => NewListReDirect()));}, icon: Icon(Icons.menu))],
-
-          title: Text("My ToDo Lists"),
-        ),
-        body: Center(
-            child: Container(
-              child:
-              allToDoLists.allToDoLists.length>0 ? ListView.builder(
-                scrollDirection: Axis.vertical,
-
-                itemCount: allToDoLists.allToDoLists.length,
-                itemBuilder: (BuildContext context, int index)
-                {return SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                    child: ElevatedButton(
-                        child: Text(allToDoLists.allToDoLists[index].name),
-                        onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(builder:(context) =>
-                              ToDoList(allToDoLists.allToDoLists[index].name, allToDoLists.allToDoLists[index].listDescription, allToDoLists.allToDoLists[index].teamName)
-                          ));
-                        }
-                    )
-                );
-                },
-              ): Container(),
-            )
-        )
-      // new ButtonBar(
-      //   mainAxisSize: MainAxisSize.min,
-      //   children: [
-      //
-      //     ElevatedButton(
-      //       child: Text('Back'),
-      //       onPressed: () {
-      //         Navigator.pop(context);
-      //       },
-      //     ),
-      // SizedBox(width: 142),
-      // FloatingActionButton.extended(
-      //   label: Text('Create A New List'),
-      //   backgroundColor: Colors.orange,
-      //   focusColor: Colors.white,
-      //     onPressed: () {
-      //       Navigator.push(
-      //           context,
-      //           MaterialPageRoute(builder: (context) => NewListReDirect()));
-      //         }
-      //       )
-      //   ]
-      // )
-
-
-    ),
-    );
-
-  }
-}
-
-
-class TeamLists extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text("Team ToDo Lists"),
-        ),
-        body: Center(
-          child: Container(
-            margin: const EdgeInsets.only(top: 10),
-            child: Row(
-              mainAxisAlignment:
-              MainAxisAlignment.spaceBetween,
-              children: [
-                new ButtonBar(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ElevatedButton(
-                      child: Text('Back'),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    ),
-                    SizedBox(width: 142),
-                    FloatingActionButton.extended(
-                      label: Text('Create A New List'),
-                      backgroundColor: Colors.orange,
-                      focusColor: Colors.white,
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => YourLists()));
-                      },
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        )
-    );
-  }
-}
-
-
-class Settings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Your Team Lists"),
-      ),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.pop(context);
-            // Navigate back to first route when tapped.
-          },
-          child: Text('Back'),
+        title: Text(
+          'Welcome ' + ClientSdkService.getInstance().atsign,
         ),
       ),
-    );
-  }
-}
-
-class NewListReDirect extends StatefulWidget {
-
-  @override
-  _NewListReDirectState createState() => _NewListReDirectState();
-}
-
-class _NewListReDirectState extends State<NewListReDirect> {
-  final listName = TextEditingController();
-  final listDescription = TextEditingController();
-
-  List stuffs = [];
-  @override
-  Widget build(BuildContext context) {
-
-    return Scaffold(
-        appBar: AppBar(
-          title: Text("New ToDoList"),
-        ),
-
-        body: Column(
-            children: [
-              SizedBox(height: 100),
-              // widget.someText,
-              TextField(
-                  decoration: InputDecoration(
-                      hintText: "List Name",
-                      labelText: "List Name",
-                      labelStyle: TextStyle(
-                        fontSize: 24,
-                        color: Colors.white,
-                      ),
-                      border: InputBorder.none,
-                      fillColor:  Colors.orange,
-                      filled: true
-                  ),
-                  onChanged: (value) {
-
-                  },
-                  keyboardType: TextInputType.name,
-                  maxLength: 100,
-                  onSubmitted: (String value) {
-                    stuffs.add(value);
-
-                  }
-              ),
-              TextField(
-                decoration: InputDecoration(
-                  hintText: "List Description",
-                  labelText: "List Description",
-                  labelStyle: TextStyle(
-                    fontSize: 24,
-                    color: Colors.white,
-                  ),
-                  border: InputBorder.none,
-                  fillColor:  Colors.orange,
-                  filled: true,
-
-                ),
-                keyboardType: TextInputType.name,
-                maxLength: 100,
-
-              ),
-              ElevatedButton(
-                  child: Text("Create List"),
-                  onPressed: () {
-
-                    ToDoList newList = ToDoList(listName.text, listDescription.text);
-                    allToDoLists.allToDoLists.add(newList);
-                    print("List created");
-                    Navigator.pop(context);
-                  }
-              ),
-            ]
-        )
-    );
-  }
-}
-
-
-class NewTaskReDirect extends StatefulWidget {
-
-
-  @override
-  _NewTaskReDirectState createState() => _NewTaskReDirectState();
-}
-
-class _NewTaskReDirectState extends State<NewTaskReDirect> {
-  final taskName = TextEditingController();
-  final taskCreated = TextEditingController();
-  final taskDueBy = TextEditingController();
-
-  List stuffs = [];
-  @override
-  Widget build(BuildContext context) {
-
-    return Scaffold(
-        appBar: AppBar(
-          title: Text("New ToDoList"),
-        ),
-
-        body: Column(
-            children: [
-              SizedBox(height: 100),
-              // widget.someText,
-              TextField(
-                  decoration: InputDecoration(
-                      hintText: "List Name",
-                      labelText: "List Name",
-                      labelStyle: TextStyle(
-                        fontSize: 24,
-                        color: Colors.white,
-                      ),
-                      border: InputBorder.none,
-                      fillColor:  Colors.orange,
-                      filled: true
-                  ),
-                  onChanged: (value) {
-
-                  },
-                  keyboardType: TextInputType.name,
-                  maxLength: 100,
-                  onSubmitted: (String value) {
-                    stuffs.add(value);
-
-                  }
-              ),
-              TextField(
-                decoration: InputDecoration(
-                  hintText: "Team Members",
-                  labelText: "Team Members",
-                  labelStyle: TextStyle(
-                    fontSize: 24,
-                    color: Colors.white,
-                  ),
-                  border: InputBorder.none,
-                  fillColor:  Colors.orange,
-                  filled: true,
-
-                ),
-                keyboardType: TextInputType.name,
-                maxLength: 100,
-
-              ),
-              TextField(
-                decoration: InputDecoration(
-                  hintText: "Date Assigned",
-                  labelText: "Date Due By",
-                  labelStyle: TextStyle(
-                    fontSize: 24,
-                    color: Colors.white,
-                  ),
-                  border: InputBorder.none,
-                  fillColor:  Colors.orange,
-                  filled: true,
-
-                ),
-                keyboardType: TextInputType.name,
-                maxLength: 100,
-
-              ),
-              TextField(
-                decoration: InputDecoration(
-                  hintText: "Date Due By",
-                  labelText: "Date Due By",
-                  labelStyle: TextStyle(
-                    fontSize: 24,
-                    color: Colors.white,
-                  ),
-                  border: InputBorder.none,
-                  fillColor:  Colors.orange,
-                  filled: true,
-
-                ),
-                keyboardType: TextInputType.name,
-                maxLength: 100,
-
-              ),
-              ElevatedButton(
-                  child: Text("Create Task"),
-                  onPressed: () {
-
-                    // Task newTask = Task(taskName.text, taskCreated.text, taskDueBy.text); //this line needs to reference a particular todolist. Comment it out to make the program work
-                    // allTasks.add(newList);
-                    print("List created");
-                    Navigator.pop(context);
-                  }
-              ),
-            ]
-        )
-    );
-  }
-}
-
-class AllMembers {
-  List<Member> allMembersList;
-
-  AllMembers(this.allMembersList);
-
-  addMember(name, teams, toDoList, atsign, profilepic) {
-    Member newMember = Member(name, teams, toDoList, atsign, profilepic);
-    allMembersList.add(newMember);
-  }
-}
-
-class Member {
-  String name;
-  List<Team> teams = [];
-  List<ToDoList> toDoList = [];
-  String atsign;
-  Image profilepic;
-  // Class member initializes
-  Member(this.name, this.teams, this.toDoList, this.atsign, this.profilepic);
-}
-
-
-class Team {
-  String name;
-  List<Member> listMembers = [];
-  List<ToDoList> teamToDoLists = [];
-  Image teamImage;
-
-  Team(this.name, this.listMembers, this.teamToDoLists, this.teamImage);
-
-  addMember(member) {
-    listMembers.add(member);
-    return "${member.name} added to ${this.name}!";
-  }
-
-  removeMember(member) {
-    for (var i = 0; i < listMembers.length; ++i)
-      if (listMembers[i].name == name) {
-        listMembers.removeAt(i);
-        return "You removed ${listMembers[i].name} from your list.";
-      }
-  }
-}
-
-
-class AllToDoLists {
-  List<ToDoList> allToDoLists = [];
-
-  AllToDoLists();
-
-  addList(name, description) {
-    ToDoList newList = ToDoList(name, description);
-    this.allToDoLists.add(newList);
-
-
-  }
-
-  removeList(listName) {
-    for (var i = 0; i < allToDoLists.length; ++i)
-      if (allToDoLists[i].name == listName) {
-        allToDoLists.removeAt(i);
-        return "You removed ${allToDoLists[i].name}from your lists.";
-      }
-  }
-}
-
-
-class ToDoList extends StatefulWidget {
-  final String name;
-  final String teamName;
-  final String listDescription;
-  ToDoList(this.name, this.listDescription, [this.teamName = ""]);
-
-  @override
-  _ToDoListState createState() => _ToDoListState();
-}
-
-class _ToDoListState extends State<ToDoList> {
-  final List<Task> allTasks = [];
-
-  addTask(name, members, dateAssigned, dateDueBy) {
-
-    Task newTask = Task(name, members, dateAssigned, dateDueBy);
-    allTasks.add(newTask);
-
-  }
-
-  deleteTask(task, name) {
-
-    for (var i = 0; i < allTasks.length; ++i)
-      if (allTasks[i].name == name) {
-        allTasks.removeAt(i);
-        return "You removed ${allTasks[i].name}from your list.";
-      }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          actions: [IconButton(onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => NewTaskReDirect()));}, icon: Icon(Icons.menu))],
-          title: Text("Hello, ${this.widget.name}"), //Why is the name not showing up here? Needs to be fixed
-        ),
-
-        body: Center(
-            child: Container(
-              child:
-              this.allTasks.length>0 ? ListView.builder(
-                scrollDirection: Axis.vertical,
-
-                itemCount: this.allTasks.length,
-                itemBuilder: (BuildContext context, int index)
-                {return SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                    child: ElevatedButton(
-                        child: Text(this.allTasks[index].name),
-                        onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(builder:(context) =>
-                              Task(allTasks[index].name, allTasks[index].members, allTasks[index].dateAssigned, allTasks[index].dateDueBy)
-                          ));
+      body: SafeArea(
+        child: Center(
+          child: Column(
+            children: <Widget>[
+              Expanded(
+                  child: FutureBuilder(
+                    future: _scan(),
+                    builder:
+                        (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                      if (snapshot.hasData) {
+                        // Returns a list of attributes for each dish.
+                        List<String> dishAttributes = snapshot.data;
+                        print(snapshot.data);
+                        List<ListWidget> dishWidgets = [];
+                        for (String attributes in dishAttributes) {
+                          // Populate a DishWidget based on the attributes string.
+                          List<String> attributesList =
+                          attributes.split(constant.splitter);
+                          if (attributesList.length >= 3) {
+                            ListWidget dishWidget = ListWidget(
+                              title: attributesList[0],
+                              description: attributesList[1],
+                              prevScreen: HomeScreen.id,
+                            );
+                            dishWidgets.add(dishWidget);
+                          }
                         }
-                    )
-                );
-                },
-              ): Container(),
-            )
-
-        )
-    );
-  }
-}
-
-
-
-
-class Task extends StatelessWidget{
-  String name;
-  List<Member> members;
-  String dateAssigned;
-  String dateDueBy;
-
-  Task(this.name, this.members, this.dateAssigned, this.dateDueBy);
-
-  changeDateAssigned(date) {
-    this.dateAssigned = date;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    return Scaffold(
-        appBar: AppBar(
-
-          title: Text("Hello, ${this.name}"), //Why is the name not showing up here? Needs to be fixed
+                        return SafeArea(
+                          child: ListView(
+                            children: <Widget>[
+                              Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Text(
+                                        'My Lists',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 32,
+                                          color: Colors.black87,
+                                        ),
+                                      ),
+                                      IconButton(
+                                        icon: Icon(
+                                          Icons.keyboard_arrow_right,
+                                        ),
+                                        onPressed: () {
+                                          Navigator.pushReplacementNamed(
+                                              context, MainMenu.id);
+                                        },
+                                      )
+                                    ]),
+                              ),
+                              Column(
+                                children: dishWidgets,
+                              ),
+                            ],
+                          ),
+                        );
+                      } else if (snapshot.hasError) {
+                        return Text(
+                            'An error has occurred: ' + snapshot.error.toString());
+                      } else {
+                        return Center(child: CircularProgressIndicator());
+                      }
+                    },
+                  )),
+            ],
+          ),
         ),
-
-        body: Center(
-            child: Container(
-                child: Text("task")
-            )
-        )
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        backgroundColor: Color(0XFF7B3F00),
+        onPressed: () {
+          Navigator.pushNamed(context, ListScreen.id)
+              .then((value) => setState(() {}));
+        },
+      ),
     );
+  }
+
+  /// Scan for [AtKey] objects with the correct regex.
+  _scan() async {
+    ClientSdkService clientSdkService = ClientSdkService.getInstance();
+    // Instantiate a list of AtKey objects to house each cached recipe from
+    // the secondary server of the authenticated atsign
+    List<AtKey> response;
+
+    // This regex is defined for searching for an AtKey object that carries the
+    // namespace of cookbook and that have been created by the authenticated
+    // atsign (the currently logged in atsign)
+    String regex = '^(?!cached).*cookbook.*';
+
+    // Getting the recipes that are cached on the authenticated atsign's secondary
+    // server utilizing the regex expression defined earlier
+    response = await clientSdkService.getAtKeys(regex);
+    response.retainWhere((element) => !element.metadata.isCached);
+
+    // Instantiating a list of strings
+    List<String> responseList = [];
+
+    // Looping through every instance of an AtKey object
+    for (AtKey atKey in response) {
+      // We get the current AtKey object that we are looping on
+      String value = await _lookup(atKey);
+
+      // In addition to the object we are on, we add the name of the recipe,
+      // the constant splitter to segregate the fields, and again, the value of
+      // the recipe which includes; description, ingredients, and image URL
+      value = atKey.key + constant.splitter + value;
+
+      // Add current AtKey object to our list of strings defined earlier before
+      // for loop
+      responseList.add(value);
+    }
+
+    // After successfully looping through each AtKey object instance,
+    // return list of strings
+    return responseList;
+  }
+
+  /// Look up a value corresponding to an [AtKey] instance.
+  Future<String> _lookup(AtKey atKey) async {
+    ClientSdkService clientSdkService = ClientSdkService.getInstance();
+    // If an AtKey object exists
+    if (atKey != null) {
+      // Simply get the AtKey object utilizing the serverDemoService's get method
+      return await clientSdkService.get(atKey);
+    }
+    return '';
   }
 }

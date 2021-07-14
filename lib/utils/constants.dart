@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class MixedConstants {
   static const String WEBSITE_URL = 'https://atsign.com/';
   // for local server
@@ -14,3 +16,22 @@ class AppStrings {
   static const String reset_keychain = "Reset Keychain";
   static const String atsign_error = 'ATSIGN_NOT_FOUND';
 }
+
+String splitter = '@_@';
+const kTextFieldDecoration = InputDecoration(
+  hintText: 'Enter a value',
+  fillColor: Color(0XFFF1EBE5),
+  contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+  border: OutlineInputBorder(
+    borderRadius: BorderRadius.all(Radius.circular(32.0)),
+  ),
+  enabledBorder: OutlineInputBorder(
+    borderSide: BorderSide(color: Color(0XFFAF8B66), width: 1.0),
+    borderRadius: BorderRadius.all(Radius.circular(32.0)),
+  ),
+  focusedBorder: OutlineInputBorder(
+    borderSide: BorderSide(color: Color(0XFFAF8B66), width: 2.0),
+    borderRadius: BorderRadius.all(Radius.circular(32.0)),
+  ),
+);
+
